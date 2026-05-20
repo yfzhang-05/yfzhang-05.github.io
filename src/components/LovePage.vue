@@ -37,6 +37,23 @@ const messages = [
   "我们永远幸福！",
 ];
 
+const pickTargets = (
+  targets: Array<{ x: number; y: number }>,
+  limit: number
+) => {
+  if (targets.length <= limit) return targets;
+
+  const picked: Array<{ x: number; y: number }> = [];
+  const step = targets.length / limit;
+  const offset = Math.random() * step;
+
+  for (let index = 0; index < limit; index += 1) {
+    picked.push(targets[Math.floor(index * step + offset)]);
+  }
+
+  return picked;
+};
+
 export default defineComponent({
   name: "LovePage",
   setup() {
@@ -71,7 +88,7 @@ export default defineComponent({
       const canvas = canvasRef.value;
       if (!canvas) return;
 
-      deviceRatio = Math.min(window.devicePixelRatio || 1, 2);
+      deviceRatio = Math.min(window.devicePixelRatio || 1, 1.25);
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = Math.floor(width * deviceRatio);
@@ -84,26 +101,36 @@ export default defineComponent({
 
     const getTextTargets = (text: string, fontSize: number) => {
       const measureCanvas = document.createElement("canvas");
-      const measureCtx = measureCanvas.getContext("2d");
+      const measureCtx = measureCanvas.getContext("2d", {
+        willReadFrequently: true,
+      });
       if (!measureCtx) return [];
 
-      measureCanvas.width = Math.floor(width);
-      measureCanvas.height = Math.floor(height);
+      const font = `800 ${fontSize}px "Noto Serif SC", "Source Han Serif SC", serif`;
+      measureCtx.font = font;
+      const metrics = measureCtx.measureText(text);
+      const boxWidth = Math.min(width, Math.ceil(metrics.width + fontSize * 0.8));
+      const boxHeight = Math.min(height, Math.ceil(fontSize * 1.45));
+
+      measureCanvas.width = boxWidth;
+      measureCanvas.height = boxHeight;
       measureCtx.fillStyle = "#ffffff";
       measureCtx.textAlign = "center";
       measureCtx.textBaseline = "middle";
-      measureCtx.font = `800 ${fontSize}px "Noto Serif SC", "Source Han Serif SC", serif`;
-      measureCtx.fillText(text, width / 2, height / 2);
+      measureCtx.font = font;
+      measureCtx.fillText(text, boxWidth / 2, boxHeight / 2);
 
-      const imageData = measureCtx.getImageData(0, 0, width, height).data;
-      const gap = Math.max(5, Math.floor(fontSize / 23));
+      const imageData = measureCtx.getImageData(0, 0, boxWidth, boxHeight).data;
+      const gap = Math.max(7, Math.floor(fontSize / 18));
       const targets: Array<{ x: number; y: number }> = [];
+      const left = (width - boxWidth) / 2;
+      const top = (height - boxHeight) / 2;
 
-      for (let y = 0; y < height; y += gap) {
-        for (let x = 0; x < width; x += gap) {
-          const alpha = imageData[(y * width + x) * 4 + 3];
+      for (let y = 0; y < boxHeight; y += gap) {
+        for (let x = 0; x < boxWidth; x += gap) {
+          const alpha = imageData[(y * boxWidth + x) * 4 + 3];
           if (alpha > 120) {
-            targets.push({ x, y });
+            targets.push({ x: x + left, y: y + top });
           }
         }
       }
@@ -117,10 +144,8 @@ export default defineComponent({
           ? Math.min(width * 0.52, height * 0.66, 520)
           : Math.min(width * 0.095, 86);
       const targets = getTextTargets(text, fontSize);
-      const maxParticles = kind === "countdown" ? 2300 : 2100;
-      const selectedTargets = targets
-        .sort(() => Math.random() - 0.5)
-        .slice(0, maxParticles);
+      const maxParticles = kind === "countdown" ? 1200 : 1450;
+      const selectedTargets = pickTargets(targets, maxParticles);
 
       while (particles.length < selectedTargets.length) {
         particles.push(createParticle(width / 2, height / 2));
@@ -139,7 +164,7 @@ export default defineComponent({
         particles[index].alpha =
           kind === "countdown" ? 0.82 + Math.random() * 0.18 : 0.68 + Math.random() * 0.32;
         particles[index].size =
-          kind === "countdown" ? Math.random() * 3.2 + 2.1 : Math.random() * 1.9 + 1.1;
+          kind === "countdown" ? Math.random() * 3.4 + 2.4 : Math.random() * 2.1 + 1.2;
       });
     };
 
@@ -176,6 +201,7 @@ export default defineComponent({
 
       drawBackground();
       context.globalCompositeOperation = "lighter";
+      context.shadowBlur = 0;
 
       particles.forEach((particle) => {
         const dx = particle.tx - particle.x;
@@ -203,10 +229,6 @@ export default defineComponent({
         context.fillStyle = `hsla(${particle.hue}, 92%, ${particle.lightness}%, ${
           particle.alpha * glow
         })`;
-        context.shadowColor = `hsla(${particle.hue}, 100%, ${
-          Math.min(particle.lightness + 16, 76)
-        }%, 0.7)`;
-        context.shadowBlur = 13;
         context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         context.fill();
       });
