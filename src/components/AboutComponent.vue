@@ -14,7 +14,7 @@
       <div class="intro">
         <span class="en">Hello!&nbsp;&nbsp;I'm {{ profile.name }}</span>
         <span class="cn">({{ profile.chineseName }})</span>
-        <img :src="profile.logo" alt="Zhejiang University" class="logo" />
+        <img :src="profile.logo" alt="Chongqing University" class="logo" />
       </div>
       <p class="identity">{{ profile.affiliation }}</p>
       <div class="direction" aria-label="Research interests">
@@ -26,10 +26,7 @@
           <img
             :src="area.icon"
             :alt="`${area.label} icon`"
-            :class="[
-              'icon',
-              { 'time-icon': area.label === 'Time Series Forecasting' },
-            ]"
+            class="icon"
           />
           <span v-if="index < profile.researchAreas.length - 1" class="divider">
             |
@@ -156,10 +153,6 @@ export default defineComponent({
   width: 1.25rem;
   height: 1.25rem;
   vertical-align: middle;
-}
-
-.time-icon {
-  transform: translate(0.15rem, 0.15rem);
 }
 
 .connect-icon {

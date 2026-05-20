@@ -1,13 +1,8 @@
-import bilibiliIcon from "@/assets/icons/bilibili.svg";
+import architectureIcon from "@/assets/icons/architecture.png";
+import cquLogo from "@/assets/icons/cqulogo.png";
 import emailIcon from "@/assets/icons/email.svg";
-import githubIcon from "@/assets/icons/github.svg";
-import googleIcon from "@/assets/icons/google.svg";
-import timeIcon from "@/assets/icons/time_series.svg";
-import pdfIcon from "@/assets/icons/pdf.svg";
-import twitterIcon from "@/assets/icons/TwitterX.svg";
-import zjuLogo from "@/assets/icons/zjulogo.svg";
 
-export type SectionId = "about" | "news" | "publication";
+export type SectionId = "about" | "news" | "portfolio";
 
 export interface NavItem {
   id: SectionId;
@@ -31,13 +26,13 @@ export interface NewsItem {
   highlights: string[];
 }
 
-export interface PublicationLink {
+export interface PortfolioLink {
   label: string;
   href?: string;
   icon: string;
 }
 
-export interface Publication {
+export interface PortfolioItem {
   title: string;
   authors: string[];
   highlightedAuthors: string[];
@@ -45,142 +40,69 @@ export interface Publication {
   venue: string;
   year: string;
   image: string;
-  links: PublicationLink[];
+  links: PortfolioLink[];
 }
 
 export const navItems: NavItem[] = [
   { id: "about", label: "About" },
   { id: "news", label: "News" },
-  { id: "publication", label: "Publications" },
+  { id: "portfolio", label: "Portfolio" },
 ];
 
 export const profile = {
-  name: "Jiawen Zhu",
-  chineseName: "朱甲文",
-  avatarAlt: "Portrait of Jiawen Zhu",
-  logo: zjuLogo,
-  affiliation: "PhD Student in Artificial Intelligence @ Zhejiang University",
+  name: "Yifan Zhang",
+  chineseName: "张一凡",
+  avatarAlt: "Portrait of Yifan Zhang",
+  logo: cquLogo,
+  affiliation: "Master's Student in Architecture @ Chongqing University",
   researchAreas: [
-    { label: "Time Series Forecasting", icon: timeIcon },
-    // { label: "Data Visualization", icon: visualizationIcon },
+    { label: "Architecture", icon: architectureIcon },
   ] as ResearchArea[],
   links: [
     {
       label: "Email",
-      href: "mailto:jiawenzhu@zju.edu.cn",
+      href: "mailto:yfzhang05@126.com",
       icon: emailIcon,
-    },
-    {
-      label: "GitHub",
-      href: "https://github.com/andone-07",
-      icon: githubIcon,
-    },
-    {
-      label: "Google Scholar",
-      icon: googleIcon,
-    },
-    {
-      label: "X",
-      icon: twitterIcon,
-    },
-    {
-      label: "Bilibili",
-      icon: bilibiliIcon,
     },
   ] as SocialLink[],
 };
 
 export const introduction = {
-  textBeforeGroup:
-    "Welcome to visit my homepage! Currently, I am a master's student majoring in artificial intelligence at",
-  group: {
-    label: "ZJUIDG",
-    href: "https://zjuidg.org/",
-  },
-  university: "Zhejiang University",
-  supervisor: {
-    label: "Prof. Di Weng",
-    href: "https://dwe.ng/",
-  },
-  bachelorSchool: "Ocean University of China",
-  researchGoal: "Time Series Analysis",
+  paragraphs: [
+    "Welcome to visit my homepage! I studied Architecture at Qingdao University of Technology from 2020 to 2025.",
+    "In 2025, I was admitted to the Master of Architecture program at Chongqing University, supervised by Prof. Ke Chen.",
+  ],
+  highlights: [
+    "Qingdao University of Technology",
+    "Chongqing University",
+    "Prof. Ke Chen",
+    "Architecture",
+  ],
 };
 
 export const newsItems: NewsItem[] = [
   {
-    date: "2026.05",
+    date: "2025.09",
     content:
-      "Our paper Dynamic TMoE: A Drift-Aware Dynamic Mixture of Experts Framework for Non-Stationary Time Series Forecasting has been accepted to ICML 2026 as a poster!",
+      "I was admitted to the Master of Architecture program at Chongqing University, supervised by Prof. Ke Chen.",
     highlights: [
-      "ICML 2026",
-      "Dynamic TMoE: A Drift-Aware Dynamic Mixture of Experts Framework for Non-Stationary Time Series Forecasting",
+      "Master of Architecture",
+      "Chongqing University",
+      "Prof. Ke Chen",
     ],
   },
   {
-    date: "2025.09",
-    content: "I started my PhD studies at ZJUIDG, Zhejiang University.",
-    highlights: ["ZJUIDG", "Zhejiang University"],
-  },
-  {
-    date: "2024.09",
-    content: "I started my master's studies at ZJUIDG, Zhejiang University.",
-    highlights: ["ZJUIDG", "Zhejiang University"],
-  },
-  {
-    date: "2024.06",
+    date: "2025.06",
     content:
-      "I obtained my bachelor's degree in Computer Science from Ocean University of China.",
-    highlights: ["Ocean University of China"],
+      "I completed my undergraduate studies in Architecture at Qingdao University of Technology.",
+    highlights: ["Architecture", "Qingdao University of Technology"],
+  },
+  {
+    date: "2020.09",
+    content:
+      "I began my undergraduate studies in Architecture at Qingdao University of Technology.",
+    highlights: ["Architecture", "Qingdao University of Technology"],
   },
 ];
 
-export const publications: Publication[] = [
-  {
-    title:
-      "Dynamic TMoE: A Drift-Aware Dynamic Mixture of Experts Framework for Non-Stationary Time Series Forecastin",
-    authors: ["Jiawen Zhu", "Shuhan Liu", "Di Weng", "Yingcai Wu"],
-    highlightedAuthors: ["Jiawen Zhu"],
-    venueTag: "ICML'26",
-    venue: "Forty-Third International Conference on Machine Learning",
-    year: "2026",
-    image: `${import.meta.env.BASE_URL}dynamic_tmoe.webp`,
-    links: [
-      {
-        label: "Paper",
-        icon: pdfIcon,
-        href: "https://openreview.net/forum?id=JabkBcaoa9",
-      },
-      {
-        label: "Code",
-        icon: githubIcon,
-        href: "https://github.com/andone-07/Dynamic-TMoE",
-      },
-    ],
-  },
-  // {
-  //   title: "Watchtower: Semantic-aware Authoring of Data Validation Rules",
-  //   authors: [
-  //     "Zhongsu Luo",
-  //     "Jiawen Zhu",
-  //     "Xinhuan Shu",
-  //     "Shuhan Liu",
-  //     "Xiwen Cai",
-  //     "Ran Chen",
-  //     "Kai Xiong",
-  //     "Jiajun Zhu",
-  //     "Di Weng",
-  //     "Yingcai Wu",
-  //   ],
-  //   highlightedAuthors: ["Jiawen Zhu"],
-  //   venueTag: "VIS'25",
-  //   venue: "IEEE Transactions on Visualization and Computer Graphics",
-  //   year: "2025",
-  //   image: `${import.meta.env.BASE_URL}watchtower.jpg`,
-  //   links: [
-  //     { label: "Paper", icon: pdfIcon },
-  //     { label: "Video", icon: videoIcon },
-  //     { label: "Web", icon: webIcon },
-  //     { label: "Code", icon: githubIcon },
-  //   ],
-  // },
-];
+export const portfolioItems: PortfolioItem[] = [];

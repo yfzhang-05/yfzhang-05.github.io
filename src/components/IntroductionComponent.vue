@@ -1,37 +1,51 @@
 <template>
-  <p class="intro">
-    {{ introduction.textBeforeGroup }}
-    <a
-      :href="introduction.group.href"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="highlight-blue link-text"
-      >{{ introduction.group.label }}</a
+  <div class="intro">
+    <p
+      v-for="paragraph in introduction.paragraphs"
+      :key="paragraph"
+      class="intro-paragraph"
     >
-    of <strong>{{ introduction.university }}</strong
-    >, supervised by
-    <a
-      :href="introduction.supervisor.href"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="highlight-blue link-text"
-      >{{ introduction.supervisor.label }}</a
-    >. I obtained my bachelor's degree in Computer Science and Technology from
-    <strong>{{ introduction.bachelorSchool }}</strong> in 2024. My research
-    focuses on
-    <span class="highlight-orange">{{ introduction.researchGoal }}</span
-    >.
-  </p>
+      <template
+        v-for="(part, index) in formatIntroduction(paragraph)"
+        :key="`${paragraph}-${index}`"
+      >
+        <strong v-if="part.highlight">{{ part.text }}</strong>
+        <span v-else>{{ part.text }}</span>
+      </template>
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { introduction } from "@/data/profile";
 
+interface IntroTextPart {
+  text: string;
+  highlight: boolean;
+}
+
+const formatIntroduction = (paragraph: string): IntroTextPart[] => {
+  const highlights = new Set(introduction.highlights);
+  const escaped = introduction.highlights.map((text) =>
+    text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  );
+  const matcher = new RegExp(`(${escaped.join("|")})`, "g");
+
+  return paragraph
+    .split(matcher)
+    .filter(Boolean)
+    .map((text) => ({
+      text,
+      highlight: highlights.has(text),
+    }));
+};
+
 export default defineComponent({
   name: "IntroductionComponent",
   setup() {
     return {
+      formatIntroduction,
       introduction,
     };
   },
@@ -50,27 +64,16 @@ export default defineComponent({
   color: var(--text-primary);
 }
 
-strong {
-  color: var(--text-primary);
-  font-weight: 800;
+.intro-paragraph {
+  margin: 0;
 }
 
-.highlight-blue {
+.intro-paragraph + .intro-paragraph {
+  margin-top: 0.5rem;
+}
+
+strong {
   color: var(--highlight-blue);
   font-weight: 800;
-}
-
-.highlight-orange {
-  color: var(--highlight-orange);
-  font-weight: 800;
-}
-
-.link-text {
-  text-decoration: none;
-  transition: opacity 0.2s ease;
-}
-
-.link-text:hover {
-  opacity: 0.78;
 }
 </style>

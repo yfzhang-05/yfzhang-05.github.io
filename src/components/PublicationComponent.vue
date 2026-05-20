@@ -1,16 +1,19 @@
 <template>
-  <section class="publication-container" aria-labelledby="publication-title">
-    <h2 id="publication-title" class="section-title">Publications</h2>
-    <div class="publication-content">
+  <section class="portfolio-container" aria-labelledby="portfolio-title">
+    <h2 id="portfolio-title" class="section-title">Portfolio</h2>
+    <p v-if="!portfolioItems.length" class="empty-state">
+      Portfolio items will be added soon.
+    </p>
+    <div v-else class="portfolio-content">
       <article
-        v-for="publication in publications"
-        :key="publication.title"
-        class="publication-item"
+        v-for="item in portfolioItems"
+        :key="item.title"
+        class="portfolio-item"
       >
-        <figure class="publication-image">
+        <figure class="portfolio-image">
           <img
-            :src="publication.image"
-            :alt="`${publication.title} thumbnail`"
+            :src="item.image"
+            :alt="`${item.title} thumbnail`"
             width="1600"
             height="724"
             loading="eager"
@@ -18,30 +21,27 @@
             fetchpriority="high"
           />
         </figure>
-        <div class="publication-info">
-          <h3 class="pub-title">{{ publication.title }}</h3>
+        <div class="portfolio-info">
+          <h3 class="portfolio-title">{{ item.title }}</h3>
           <p class="pub-authors">
-            <template
-              v-for="(author, index) in publication.authors"
-              :key="author"
-            >
+            <template v-for="(author, index) in item.authors" :key="author">
               <span
-                :class="{ 'author-myself': isHighlighted(publication, author) }"
+                :class="{ 'author-myself': isHighlighted(item, author) }"
               >
                 {{ author }}</span
-              ><span v-if="index < publication.authors.length - 1">, </span>
+              ><span v-if="index < item.authors.length - 1">, </span>
             </template>
           </p>
           <p class="pub-venue">
-            <span class="venue-tag">{{ publication.venueTag }}</span>
+            <span class="venue-tag">{{ item.venueTag }}</span>
             <span class="venue-detail">
-              {{ publication.venue }}, {{ publication.year }}
+              {{ item.venue }}, {{ item.year }}
             </span>
           </p>
-          <div class="pub-links" aria-label="Publication resources">
+          <div class="pub-links" aria-label="Portfolio resources">
             <component
               :is="link.href ? 'a' : 'span'"
-              v-for="link in publication.links"
+              v-for="link in item.links"
               :key="link.label"
               :href="link.href"
               :target="link.href ? '_blank' : undefined"
@@ -67,24 +67,24 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { publications, type Publication } from "@/data/profile";
+import { portfolioItems, type PortfolioItem } from "@/data/profile";
 
-const isHighlighted = (publication: Publication, author: string) =>
-  publication.highlightedAuthors.includes(author);
+const isHighlighted = (item: PortfolioItem, author: string) =>
+  item.highlightedAuthors.includes(author);
 
 export default defineComponent({
   name: "PublicationComponent",
   setup() {
     return {
       isHighlighted,
-      publications,
+      portfolioItems,
     };
   },
 });
 </script>
 
 <style scoped>
-.publication-container {
+.portfolio-container {
   width: min(100%, 1080px);
   margin: 0 auto;
   text-align: left;
@@ -99,20 +99,28 @@ export default defineComponent({
   color: var(--text-primary);
 }
 
-.publication-content {
+.empty-state {
+  margin: 0;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(1rem, 1.8vh, 1.15rem);
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.portfolio-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.publication-item {
+.portfolio-item {
   display: grid;
   grid-template-columns: minmax(16rem, 23rem) 1fr;
   gap: clamp(1rem, 2vw, 1.6rem);
   padding: 0.4rem 0 1rem;
 }
 
-.publication-image {
+.portfolio-image {
   width: 100%;
   aspect-ratio: 16 / 9;
   margin: 0;
@@ -122,21 +130,21 @@ export default defineComponent({
   border-radius: 6px;
 }
 
-.publication-image img {
+.portfolio-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
 }
 
-.publication-info {
+.portfolio-info {
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.pub-title {
+.portfolio-title {
   margin: 0;
   font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
   font-size: clamp(1.12rem, 2.1vh, 1.35rem);
@@ -214,7 +222,7 @@ export default defineComponent({
 }
 
 @media (max-width: 760px) {
-  .publication-item {
+  .portfolio-item {
     grid-template-columns: 1fr;
   }
 }
